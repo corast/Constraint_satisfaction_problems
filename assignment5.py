@@ -109,6 +109,7 @@ class CSP:
         assignments and inferences that took place in previous
         iterations of the loop.
         """
+        assignment
         # TODO: IMPLEMENT THIS
         pass
 
@@ -200,3 +201,8 @@ def print_sudoku_solution(solution):
         print
         if row == 2 or row == 5:
             print '------+-------+------'
+
+
+csp = create_map_coloring_csp()
+print csp.get_all_arcs()
+print csp.get_all_possible_pairs

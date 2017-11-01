@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="42051b63-0ee1-4b5b-aa82-f04a92da153d" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/src/Assignment5.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.vscode/settings.json" afterPath="$PROJECT_DIR$/.vscode/settings.json" />
-    </list>
+    <list default="true" id="42051b63-0ee1-4b5b-aa82-f04a92da153d" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -51,7 +47,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="560" />
     <option name="y" value="-20" />
     <option name="width" value="976" />
@@ -207,7 +203,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-9" y="-9" width="1938" height="1048" extended-state="6" />
+    <frame x="-9" y="-9" width="1938" height="1048" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
@@ -250,11 +246,11 @@
         <state relative-caret-position="-63">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <marker date="1509445566686" expanded="true" signature="17078:17095" ph="..." />
-            <marker date="1509445566686" expanded="true" signature="17078:17113" ph="..." />
-            <marker date="1509445566686" expanded="true" signature="17078:17126" ph="..." />
-            <marker date="1509445566686" expanded="true" signature="17078:17141" ph="..." />
-            <marker date="1509445566686" expanded="true" signature="17146:18056" ph="..." />
+            <marker date="1509445826911" expanded="true" signature="16760:16777" ph="..." />
+            <marker date="1509445826911" expanded="true" signature="16760:16795" ph="..." />
+            <marker date="1509445826911" expanded="true" signature="16760:16808" ph="..." />
+            <marker date="1509445826911" expanded="true" signature="16760:16823" ph="..." />
+            <marker date="1509445826911" expanded="true" signature="17146:18056" ph="..." />
           </folding>
         </state>
       </provider>
