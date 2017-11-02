@@ -2,6 +2,7 @@
 
 import copy
 import itertools
+import types
 
 class CSP:
     def __init__(self):
@@ -29,6 +30,17 @@ class CSP:
         'a' and the second component comes from list 'b'.
         """
         return itertools.product(a, b)
+
+    def get_all_possible_pairs_as_list(self, a, b):
+        """Get a list of all possible pairs (as tuples) of the values of
+        a and b, where the first component comes from list/value
+        'a' and the second component comes from list 'b'.
+        """
+        #need to check if a is a string value or a list of one elements.
+        if isinstance(a,types.StringTypes):
+            return list(itertools.product([a], b)) 
+        return list(itertools.product(a, b)) 
+
 
     def get_all_arcs(self):
         """Get a list of all arcs/constraints that have been defined in
@@ -109,42 +121,28 @@ class CSP:
         assignments and inferences that took place in previous
         iterations of the loop.
         """
-        # TODO: IMPLEMENT THIS
-        """ 
-        if assignment is complete 
-            return assignment
-        var = SELECT_UNASSIGNED_VARIABLES(csp)
-        for each value in order-domain-value(var, assignment, cps)
-            if value is consistent with assignment
-                add var to assignment
-                inferences = inference(assignment, queu)
-                if inference not failour
-                    add inference to assignment
-                    result = backtrack(assignment)
-                    if result not failure
-                        return result
-            remove var and inference from assignment
-        return failure
-        """
-        if finished(assignment):
+        #Check if we are finished, every variable assigned one value.
+        if self.finished(assignment):
             return assignment
         
+        #Select next unassigned variable.
         variable = self.select_unassigned_variable(assignment)
-
         #Itterate thru every value we can chose for an variable.
-        for value in order_domain_variable(assignment,variable):
-            #Make a copy
+        for value in self.order_domain_variable(assignment,variable):
+            #Make a copy to prevent messing with old instanses of assignment for other itterations.
             assignment_copy = copy.deepcopy(assignment)
-            assignment_copy[variable] = value
+            #assign our current variable to our current value.
+            assignment_copy[variable] = [value]
             #if value is incostistent with assignment.
             #iff choise of value consistent with every constraint
             #We need to check if we chose this value, that it is arc consistent
-            if self.inference(assignment_copy, value):
+            if self.inference(assignment_copy, self.get_all_arcs()):
+                # we nedd to call backtrack recursivly, to check next layer in the "tree" on the copy.
                 result = self.backtrack(assignment_copy)
-                if result: #result should be false if it doesn't work.
+                if result: #result should be false if it doesn't work, or finished assignment list
                     return result
-            
-        return assignment
+            #assignment_copy.remove(value)
+        return False
 
     def select_unassigned_variable(self, assignment):
         """The function 'Select-Unassigned-Variable' from the pseudocode
@@ -152,11 +150,10 @@ class CSP:
         in 'assignment' that have not yet been decided, i.e. whose list
         of legal values has a length greater than one.
         """
-        # TODO: IMPLEMENT THIS
 
         #Itterate every item in the domain
-        for variable, values in assingment.iteritems():
-            #if there are more than one value to chose from
+        for variable, values in assignment.iteritems():
+            #if there are more than one value to chose from in tis variables legal values
             if len(values) > 1: #We know there should exist atleast one, because the assignment is not finished at this stage.
                 #return name corresponding to these values.
                 return variable
@@ -167,22 +164,24 @@ class CSP:
         the lists of legal values for each undecided variable. 'queue'
         is the initial queue of arcs that should be visited.
         """
-        # TODO: IMPLEMENT THIS
-
         #itterate tru the que and check for consistency
-        for arcs in queue:
-            pass
         while queue:
             #que consists of all arcs that should be visited, an arc is a connection of every neighbour (x,y)
-            (X_i,X_j) = queue.pop()
+            #Get first element in queue
+            (X_i,X_j) = queue.pop(0)
             if self.revise(assignment, X_i, X_j):
                 #Check if x has any legal steps left.
                 if not assignment[X_i]:
                     return False
                 
-                #Need to itterate every 
-                
-        pass
+                #Need to itterate every neighbour from this variable,
+                #And add everyone to the list who is not the variables X_j (current arc)
+                all_neighbors = self.get_all_neighboring_arcs(X_i)
+                for X_k, X_i in all_neighbors:
+                    #We need to check if X_k is the same neighbour as X_j
+                    if X_k != X_j:
+                        queue.append((X_k,X_i))#Need to add this new arc to neighbour.
+        return True
 
     def revise(self, assignment, i, j):
         """The function 'Revise' from the pseudocode in the textbook.
@@ -193,66 +192,32 @@ class CSP:
         between i and j, the value should be deleted from i's list of
         legal values in 'assignment'.
         """
-  
-        """ Returns true iff we revise the domain of X_i
-            revised = False
-            for each x in D_i
-                if no value y in D_j allows (x,y) to statify the constraint between X_i and X_j 
-                    then delete x from D_i
-                    revised = True
-            return revised
-        """
-        #Go thru 
-        reviced = False
-
-        #itterate every legal value for variable i's domain.
-        #for x_i in assignment[i]:
-        """
-            possible_arcs = []
-            #All values that should be visited next
-            for x_j in assignment[j]:
-                possible_arcs.append((x_i,x_j))
-            print "arcs: ", possible_arcs
-
-            #List of every legal pair in the form {(C1,C2),...}
-            legal_values = self.constraints[i][j] #All legal values between two variables. 
-            print "leg_val", legal_values
-            #Generate a list of every possible arc with the value x_i and all of one of the neighbours.
-            pairs = self.get_all_possible_pairs(assignment[i],assignment[j])
-            
-            for pai in pairs:
-                print pai
-
-            #We need to check if 
-
-            for pair in legal_values:
-                if pair in possible_arcs:
-                    #print "pair is in possible pair", pair
-                    pass
-            #We need to check if our pair of x_i and every pair of x_j is not in this list.
-
-            #print "constraints:", self.constraints[i][j]
-            #Check if x_i is an invallid assignment in domain[j]
-            if not self.constraints[x_i][j]:
-                #if there are no valie x_j in domain[j] that satisfy the constraint between i and j.
-                #then delete x_i from D_i.
-                #And set reviced = True
-                assignment[i].remove(x_i)
-                reviced = True
-        return reviced
-        """
+        revised = False
         #List of every legal pair in the form {(C1,C2),...}
         legal_values = self.constraints[i][j] #All legal values between two variables. 
-        #every possible pair we can make from these values. 
-        all_value_pairs = self.get_all_possible_pairs(assignment[i],assignment[j])
-        for pair in all_value_pairs:
-            if pair in legal_values:
-                continue
-            reviced = True
-            assignment[i].remove(pair[0])
-        #Return with having remove 
-        return reviced
+   
+        #itterate tru every legal value in i's domain.
+        for value in assignment[i]:
+            #we create ever possible value from this one.
+            all_value_pairs = self.get_all_possible_pairs_as_list(value, assignment[j])
+            #We remove this value if we find no legal value that statisfy the constraint.
+            remove_value = True
+            for pair in all_value_pairs:
+                #If there is atleast one value that is in the constraints, we can move on, otherwise we remove this value.
+                if pair in legal_values:
+                    remove_value = False
+                    #we dont need to check the remaining pairs, since there exist atleast one valid pair to choose from.
+                    break
 
+            #Check if we need to remove this value as a option for i (X_i)
+            if remove_value:
+                #we know the pair is not a legal value, we need to prune/remove this value from i's domain
+                assignment[i].remove(value)
+                revised = True
+        #Return whether or not we had to remove any values from i's domain.
+        return revised
+
+    
     def order_domain_variable(self, assignment, variable):
         """ return the list of legal values corresponding to this variable, in whatever oder we specify """
         #in our case we shouldnt do anything, but return the values for an variable in the default order.
@@ -260,7 +225,7 @@ class CSP:
 
     def finished(self,assingment):
         """ return true if all variables has been assigned/decided. 
-            i.e every variable contain only a list of lengt 1"""
+            i.e every variable contain only a list of possible values of length 1"""
         for variable, values in assingment.iteritems():
             if len(values) != 1:
                 return False
@@ -318,25 +283,20 @@ def print_sudoku_solution(solution):
     """
     for row in range(9):
         for col in range(9):
-            print solution['%d-%d' % (row, col)][0]
+            print solution['%d-%d' % (row, col)][0],
             if col == 2 or col == 5:
                 print '|',
-        print
+        print ""
         if row == 2 or row == 5:
             print '------+-------+------'
 
 
 csp = create_map_coloring_csp()
 asigment = copy.deepcopy(csp.domains)
-"""print "get_all_arcs= ", csp.get_all_arcs()
-print "variables= ",csp.variables
-print ""
-print "domains= ",csp.domains 
-print "domains['WA]'= ",csp.domains['WA'] 
-print "asigmen['WA']=", asigment['WA']
-print ""
-print "csp.constraints['WA']['SA']=",csp.constraints['WA']['SA']
-"""
-print "finished:", csp.finished(csp.domains)
 
-csp.backtracking_search()
+#print csp.backtracking_search()
+
+
+csp_easy = create_sudoku_csp("sudokus/veryhard.txt")
+solution = csp_easy.backtracking_search()
+print_sudoku_solution(solution)
