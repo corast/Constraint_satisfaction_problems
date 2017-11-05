@@ -16,6 +16,11 @@ class CSP:
         # the variable pair (i, j)
         self.constraints = {}
 
+        #Count number of times we call recursive function call
+        self.number_of_calls = 0
+        #Coint number of times we failed
+        self.number_of_fails = 0
+
     def add_variable(self, name, domain):
         """Add a new variable to the CSP. 'name' is the variable name
         and 'domain' is a list of the legal values for the variable.
@@ -121,7 +126,9 @@ class CSP:
         assignments and inferences that took place in previous
         iterations of the loop.
         """
-        #Check if we are finished, every variable assigned one value.
+        #Increase number of times we call backtrack function.
+        self.number_of_calls += 1
+        #Check if we are finished, i.e every variable assigned one value.
         if self.finished(assignment):
             return assignment
         
@@ -141,7 +148,12 @@ class CSP:
                 result = self.backtrack(assignment_copy)
                 if result: #result should be false if it doesn't work, or finished assignment list
                     return result
-            #assignment_copy.remove(value)
+            #remove{var = value} and inference from assignment. Seems to work fine with or without.
+            assignment_copy[variable].remove(value)
+            #not sure which delete to do, or how to remove inference from this assignment.
+            #del assignment_copy[variable]
+        #count number of times we fail to look for a solution. i.e we have no possible values to check next.
+        self.number_of_fails += 1
         return False
 
     def select_unassigned_variable(self, assignment):
@@ -200,7 +212,7 @@ class CSP:
         for value in assignment[i]:
             #we create ever possible value from this one.
             all_value_pairs = self.get_all_possible_pairs_as_list(value, assignment[j])
-            #We remove this value if we find no legal value that statisfy the constraint.
+            #We remove this value if we find no legal value that statisfy the constraints.
             remove_value = True
             for pair in all_value_pairs:
                 #If there is atleast one value that is in the constraints, we can move on, otherwise we remove this value.
@@ -291,12 +303,10 @@ def print_sudoku_solution(solution):
             print '------+-------+------'
 
 
-csp = create_map_coloring_csp()
-asigment = copy.deepcopy(csp.domains)
-
-#print csp.backtracking_search()
-
-
-csp_easy = create_sudoku_csp("sudokus/veryhard.txt")
-solution = csp_easy.backtracking_search()
+#Show output to one board at a time
+board = "sudokus/veryhard.txt"
+csp = create_sudoku_csp(board)
+solution = csp.backtracking_search()
+print "board:", board
 print_sudoku_solution(solution)
+print "Calls:", csp.number_of_calls, " Fails:", csp.number_of_fails
